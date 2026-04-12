@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radz | Support Streamer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FFC107;
+            --primary-glow: rgba(255, 193, 7, 0.4);
+            --bg: #0F1014;
+            --card: #16181D;
+            --input: #1E2128;
+            --text-main: #FFFFFF;
+            --text-muted: #94A3B8;
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); /* Efek Smooth */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 15% 0%, rgba(255, 193, 7, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 100%, rgba(255, 193, 7, 0.08) 0%, transparent 40%);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            padding: 35px 30px;
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+            animation: containerIn 0.8s ease-out;
+        }
+
+        @keyframes containerIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Profile Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 18px;
+        }
+
+        .avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            /* Bentuk profil tetap organik sesuai permintaan */
+            border-radius: 35% 65% 70% 30% / 30% 30% 70% 70%; 
+            object-fit: cover;
+            border: 2px solid var(--primary);
+            padding: 5px;
+            box-shadow: 0 10px 25px var(--primary-glow);
+            transition: var(--transition);
+        }
+
+        .avatar-wrapper img:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        /* Input Styles */
+        .form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        input[type="text"], textarea, .bank-select {
+            width: 100%;
+            background: var(--input);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 18px;
+            padding: 16px 20px;
+            color: white;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 193, 7, 0.03);
+            box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.1);
+        }
+
+        .anon-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+
+        .anon-toggle:hover { color: white; }
+
+        /* Payment Tabs */
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .method-item {
+            background: var(--input);
+            padding: 14px 10px;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: var(--transition);
+            color: var(--text-muted);
+            border: 1px solid transparent;
+        }
+
+        .method-item.active {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 10px 20px var(--primary-glow);
+            transform: translateY(-2px);
+        }
+
+        /* Payment Display Smooth Animation */
+        .display-area {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            padding: 24px;
+            display: none;
+            border: 1px dashed rgba(255, 255, 255, 0.15);
+            text-align: center;
+            animation: slideSmooth 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes slideSmooth {
+            from { opacity: 0; transform: scale(0.9) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .val-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .qr-preview {
+            width: 100%;
+            max-width: 160px;
+            border-radius: 12px;
+            border: 4px solid white;
+            margin: 10px 0;
+        }
+
+        /* Buttons */
+        .btn-action {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-action:hover { background: rgba(255, 255, 255, 0.2); }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            padding: 18px;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 30px var(--primary-glow);
+        }
+
+        /* Toast Popup */
+        .toast {
+            position: fixed;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #1C1E24;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 9999;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.3s;
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+/* Container Banner */
+.tutorial-banner {
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.15);
+    border-radius: 14px;
+    padding: 12px 0; /* Padding atas bawah saja agar teks tidak terpotong samping */
+    margin-bottom: 20px;
+    overflow: hidden; /* Menyembunyikan teks yang keluar jalur */
+    display: flex;
+}
+
+/* Animasi Looping Tanpa Putus */
+.tutorial-text {
+    display: flex;
+    white-space: nowrap;
+    animation: marquee 25s linear infinite; /* Durasi 25 detik agar lebih lambat */
+}
+
+.tutorial-text span {
+    color: var(--primary);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding-right: 50px; /* Jarak antar pengulangan teks */
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } /* Geser setengah panjang total teks */
+}
+
+
+    </style>
+</head>
+<body>
+
+<div id="toast" class="toast">
+    <span id="toast-icon">✅</span>
+    <span id="toast-msg">Success</span>
+</div>
+
+<div class="container">
+    <div class="header">
+        <div class="avatar-wrapper">
+            <img src="https://i.ibb.co.com/8DTz6y8p/f0f33165-a10c-4507-b220-061c2936755d.jpg" alt="Radz">
+        </div>
+        <h1>Radz</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Tebarkan kebaikan untuk streamer favoritmu</p>
+    </div>
+
+    <div class="form-section">
+        <div class="input-box">
+            <input type="text" id="sender" placeholder="Nama pengirim">
+            <label class="anon-toggle" style="margin-top: 10px;">
+                <input type="checkbox" id="anonCheck" style="accent-color: var(--primary); width: 18px; height: 18px;">
+                <span>Sembunyikan nama (King)</span>
+            </label>
+        </div>
+
+
+        
+        <textarea id="message" rows="3" placeholder="Pesan untuk Radz..."></textarea>
+
+
+<div class="tutorial-banner">
+    <div class="tutorial-text">
+        <span> CARA TRANSFER: 1. Masukkan Nama & Pesan ⮕   2. Pilih Metode (DANA/QRIS/BANK) ⮕  3. Salin nomor/unduh qr ⮕  4.Bayar   5.Klik tombol "Kirim Dukungan" untuk konfirmasi via WA.</span>
+        <span> CARA TRANSFER: 1. Masukkan Nama & Pesan ⮕   2. Pilih Metode (DANA/QRIS/BANK) ⮕  3. Salin nomor/unduh qr ⮕  4. Bayar  5.Klik tombol "Kirim Dukungan" untuk konfirmasi via WA.</span>
+    </div>
+</div>
+
+        <p style="font-size: 0.8rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Metode Dukungan</p>
+        <div class="method-grid">
+            <div class="method-item" onclick="setPay('dana', this)">DANA</div>
+            <div class="method-item" onclick="setPay('qris', this)">QRIS</div>
+            <div class="method-item" onclick="setPay('bank', this)">BANK</div>
+        </div>
+
+        <div id="payDisplay" class="display-area"></div>
+
+        <button class="btn-submit" onclick="launchWA()">
+            Konfirmasi
+        </button>
+    </div>
+</div>
+<script>
+    let activeMethod = '';
+    const QR_URL = "https://i.ibb.co.com/k2L4KhdF/IMG-20260317-WA0475.jpg";
+
+    function showToast(msg, icon = '✅') {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-msg').innerText = msg;
+        document.getElementById('toast-icon').innerText = icon;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function setPay(type, el) {
+        activeMethod = type;
+        document.querySelectorAll('.method-item').forEach(m => m.classList.remove('active'));
+        el.classList.add('active');
+
+        const area = document.getElementById('payDisplay');
+        area.style.display = 'block';
+
+        if(type === 'dana') {
+            area.innerHTML = `
+                <p style="font-size: 0.8rem; color: var(--text-muted)">Nomor DANA:</p>
+                <div class="val-text">0896 0326 6259</div>
+                <p style="font-size: 0.8rem; margin-bottom: 12px">A.N : JUNTXXX</p>
+                <button class="btn-action" onclick="copy('089603266259')">Salin Nomor</button>
+            `;
+        } else if(type === 'qris') {
+            area.innerHTML = `
+                <p style="font-size: 0.8rem; color: var(--text-muted)">Silakan Scan / Unduh:</p>
+                <img src="${QR_URL}" class="qr-preview">
+                <br>
+                <button class="btn-action" onclick="downloadQR()">📥 Unduh QR</button>
+            `;
+        } else if(type === 'bank') {
+            area.innerHTML = `
+                <select class="bank-select" style="margin-bottom: 15px;">
+                    <option>SeaBank (Utama)</option>
+                </select>
+                <p style="font-size: 0.8rem; color: var(--text-muted)">Nomor Rekening:</p>
+                <div class="val-text">9016 5836 0604</div>
+                <p style="font-size: 0.8rem; margin-bottom: 12px">A.N JUNTXXX</p>
+                <button class="btn-action" onclick="copy('901658360604')">Salin Rekening</button>
+            `;
+        }
+    }
+
+    // FUNGSI COPY ANTI-GAGAL (Universal)
+    function copy(txt) {
+        if (!navigator.clipboard) {
+            // Fallback untuk browser lama atau koneksi non-HTTPS
+            const textArea = document.createElement("textarea");
+            textArea.value = txt;
+            textArea.style.position = "fixed"; // Hindari scroll ke bawah
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Berhasil disalin!', '📋');
+            } catch (err) {
+                showToast('Gagal menyalin, coba ketik manual', '❌');
+            }
+            document.body.removeChild(textArea);
+            return;
+        }
+
+        // Metode Modern
+        navigator.clipboard.writeText(txt).then(() => {
+            showToast('Berhasil disalin!', '📋');
+        }).catch(err => {
+            showToast('Gagal menyalin', '❌');
+        });
+    }
+
+    // FUNGSI DOWNLOAD OTOMATIS
+    async function downloadQR() {
+        showToast('Menyiapkan file...', '⏳');
+        try {
+            const response = await fetch(QR_URL);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = 'QRIS-Radz.jpg'; 
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            showToast('QR Berhasil diunduh!', '📥');
+        } catch (error) {
+            // Fallback jika fetch diblokir CORS
+            const a = document.createElement('a');
+            a.href = QR_URL;
+            a.download = 'QRIS-Radz.jpg';
+            a.target = '_blank';
+            a.click();
+            showToast('QR Berhasil diunduh!', '📥');
+        }
+    }
+
+    function launchWA() {
+        if(!activeMethod) return showToast('Pilih metode dulu!', '⚠️');
+        
+        let name = document.getElementById('sender').value || "Seseorang";
+        if(document.getElementById('anonCheck').checked) name = "King (Anonim)";
+        let msg = document.getElementById('message').value || "Semangat terus berkarya!";
+
+        const text = `Halo Radz! 👋\n\nSaya *${name}* baru saja mengirim dukungan.\n\n💬 Pesan: "${msg}"\n💳 Melalui: *${activeMethod.toUpperCase()}*\n\nMohon dicek ya!`;
+        window.open(`https://wa.me/6289603266259?text=${encodeURIComponent(text)}`, '_blank');
+    }
+</script>
+
+
+</body>
+</html>
